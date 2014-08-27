@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VK Photo App</title>
+    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8">
+
+    <!-- INCLUDE REQUIRED THIRD PARTY LIBRARY JAVASCRIPT AND CSS -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/spacelab/bootstrap.min.css">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
+    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+
+
+    <!-- INCLUDE APPLICATION SPECIFIC CSS AND JAVASCRIPT -->
+    <script src="js/app.js"></script>
+    <script src="js/mainController.js"></script>
+
+    <!-- Add mousewheel plugin (this is optional) -->
+    <script type="text/javascript" src="fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+
+    <!-- Add fancyBox -->
+    <link rel="stylesheet" href="js/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+    <script type="text/javascript" src="js/jquery.fancybox.js?v=2.1.5"></script>
+
+    <!-- Optionally add helpers - button, thumbnail and/or media -->
+    <link rel="stylesheet" href="fancybox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" type="text/css" media="screen" />
+    <script type="text/javascript" src="fancybox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+    <script type="text/javascript" src="fancybox/source/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+
+    <link rel="stylesheet" href="fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+    <script type="text/javascript" src="fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+    <style>
+      .col-xs-6:nth-child(-n+2) {
+        margin-bottom: 5px;
+      }
+
+        ul.bg-change {
+            list-style-type:none;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        ul.bg-change li { 
+            display:inline-block;
+        }
+        ul.bg-change li img {
+            height: 50px;
+            width: 50px;
+            border: 1px solid #D3D3D3;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 0px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        ul.bg-change li img:hover{
+            border-color: #ADADAD;
+        }
+
+    </style>
+    <script type="text/javascript">
+        $(function(){
+         $('ul.bg-change').find('img').fadeTo('slow', 1);
+         $('ul.bg-change').find('img').hover(function(){
+          $(this).fadeTo('fast', 0.7);
+          $('body').css({ 'background-image' : 'url('+$(this).attr('src')+')' });
+         }, function(){
+          $(this).fadeTo('slow', 1);
+         });
+        });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".fancybox").fancybox({
+            padding : 0,
+            openEffect  : 'none',
+            closeEffect : 'none',
+
+            prevEffect : 'none',
+            nextEffect : 'none'
+        });
+    });
+</script>
+
+
+</head>
+<body>
+    <div class="navbar navbar-default">
+      <div class="container">
+        <div class="pull-right">
+          <ul class="bg-change">
+            <li><img src="img/1.png" /></li>
+             <li><img src="img/2.png" /></li>
+             <li><img src="img/3.png" /></li>
+             <li><img src="img/simple_dashed.png" /></li>
+             <li><img src="img/tweed.png" /></li>
+             <li><img src="img/witewall_3.png" /></li>
+             <li><img src="img/cream_pixels.png" /></li>
+             <li><img src="img/white_wall_hash.png" /></li>
+             <li><img src="img/micro_carbon.png" /></li>
+          </ul>
+        </div>
+        <div class="navbar-header pull-left">
+          <a href="#" class="navbar-brand">Find Someone</a>
+          <div class="pull-right" style="padding-top:5px; margin-left:-10px">βετα
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container" ng-app="VKPhotoApp" ng-controller="mainController" ng-init="init()">
+      <div class="row">
+        <header>
+          <h1>Search {{users_count}}</h1>
+        </header>
+      </div>
+      <div class="row">
+        <div class="col-md-3 col-md-push-9">
+          <div class="panel panel-default">
+            <div class="panel-heading">Поиск
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label class="control-label">Страна</label>
+                <select class="form-control" ng-model="selectedCountry" ng-options="obj.id as obj.title for obj in country" ng-change="setCity()">
+                  <option value>Выбор страны</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Город</label>
+                <select class="form-control" ng-model="selectedCity" ng-options="obj.id as obj.title for obj in city" ng-change="setEducation()">
+                  <option value>Выбор города</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Школа</label>
+                <select class="form-control" ng-model="selectedSchool" ng-options="obj.id as obj.title for obj in school">
+                  <option value>Выбор школы</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Университет</label>
+                <select class="form-control" ng-model="selectedUniversities" ng-options="obj.id as obj.title for obj in universities" ng-change="setFaculties()">
+                  <option value>Выбор университета</option>
+                </select>
+              </div>
+              <!-- <div class="form-group">                            <label class="control-label">Факультет</label> <select class="form-control" ng-model="selectedFaculties" ng-options="obj.id as obj.title for obj in faculties">                                <option value>                                    Выбор факультета                                </option>                            </select>                        </div> -->
+              <div class="form-group">
+                <label class="control-label">Год выпуска</label>
+                <select class="form-control" ng-model="selectedUniversity_year" ng-options="label for label in  university_year">
+                  <option value>Выбор года выпуска</option>
+                </select>
+              </div>Возраст
+              <div class="form-inline">
+                <div class="form-group">
+                  <select class="form-control" ng-model="selectedAge_from" ng-options="label for label in age_from">
+                    <option value>От</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" ng-model="selectedAge_to" ng-options="label for label in age_to">
+                    <option value>До</option>
+                  </select>
+                </div>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="selectedSex" value="1">Женский</label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="selectedSex" value="2">Мужской</label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="selectedSex" value="0">Любой</label>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Семейное положение</label>
+                <select class="form-control" ng-model="selectedStatus">
+                  <option value>Выбор статуса</option>
+                  <option value="1">Не женат</option>
+                  <option value="2">Встречается</option>
+                  <option value="3">Помолвлен</option>
+                  <option value="4">Женат</option>
+                  <option value="7">Влюблён</option>
+                  <option value="5">Всё сложно</option>
+                  <option value="6">В активном поиске</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="control-label">Кол-во юзеров на страницу</label>
+                <div class="controls">
+                  <input type="number" step="10" class="form-control" placeholder="Сколько выводить..." ng-model="selectedCount">
+                </div>
+              </div>
+              <a class="btn btn-block btn-primary" ng-click="search()">Search</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9 col-md-pull-3">
+          <!-- <div class="row" ng-repeat="user in users">                    <div class="panel panel-default">                        <div class="panel-heading">                            {{user.name}}                        </div>                        <div class="panel-body">                            <div class="col-xs-6 col-sm-3">                                <a href="#" class="thumbnail"><img src="{{user[0].photo_604}}"></a>                            </div>                            <div class="col-xs-6 col-sm-3">                                <a href="#" class="thumbnail"><img src="{{user[1].photo_604}}"></a>                            </div>                            <div class="col-xs-6 col-sm-3">                                <a href="#" class="thumbnail"><img src="{{user[2].photo_604}}"></a>                            </div>                            <div class="col-xs-6 col-sm-3">                                <a href="#" class="thumbnail"><img src="{{user[3].photo_604}}"></a>                            </div>                        </div>                    </div>                </div> -->
+          <div class="row" ng-repeat="user in users">
+            <div class="panel panel-default">
+              <div class="panel-heading">{{user.name}}
+              </div>
+              <div class="panel-body">
+                <div class="col-xs-6 col-sm-3">
+                  <a href="{{user[0].photo_604}}" class="thumbnail fancybox" rel="{{user[0].id}}"><img src="{{user[0].photo_604}}"></a>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <a href="{{user[1].photo_604}}" class="thumbnail fancybox" rel="{{user[0].id}}"><img src="{{user[1].photo_604}}"></a>
+                </div>
+                <div class="clearfix visible-xs"></div>
+                <div class="col-xs-6 col-sm-3">
+                  <a href="{{user[2].photo_604}}" class="thumbnail fancybox" rel="{{user[0].id}}"><img src="{{user[2].photo_604}}"></a>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <a href="{{user[3].photo_604}}" class="thumbnail fancybox" rel="{{user[0].id}}"><img src="{{user[3].photo_604}}"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
